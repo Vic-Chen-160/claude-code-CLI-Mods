@@ -1,0 +1,8 @@
+{
+  "name": "model-picker",
+  "version": "0.3.0",
+  "description": "提示行右端的 Model ↑ 按鈕，點一下叫出原生的模型與思考努力程度選單",
+  "author": {
+    "name": "Vic Chen"
+  }
+}

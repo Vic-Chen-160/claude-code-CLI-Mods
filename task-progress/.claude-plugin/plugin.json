@@ -1,0 +1,9 @@
+{
+  "name": "task-progress",
+  "version": "0.1.0",
+  "description": "輸入框上方列出所有 Claude Code session 的任務進度條，點名稱跳回該視窗，＋ 開新對話在同路徑開新 session",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "Vic Chen"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "claude-code-cli-mods",
+  "owner": {
+    "name": "Vic Chen"
+  },
+  "description": "Vic 的 Claude Code CLI mods：任務進度條、模型切換按鈕",
+  "plugins": [
+    {
+      "name": "task-progress",
+      "source": "./task-progress",
+      "description": "輸入框上方列出所有 session 的任務進度條，點「前往→」跳回該視窗"
+    },
+    {
+      "name": "model-picker",
+      "source": "./model-picker",
+      "description": "提示行右端 Model ↑ 按鈕，一點叫出 /model 選單"
+    }
+  ]
+}
