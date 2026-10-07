@@ -1,0 +1,46 @@
+/* 共用舞台：米色底、置中終端機視窗、上方標題、下方字幕 */
+:root {
+  --stage: #F0EEE6;
+  --ink: #141413;
+  --muted: #73726C;
+  --accent: #D97757;
+  --term-bg: #FFFFFF;
+  --term-ink: #1F1F1E;
+  --dim: #8A8984;
+  --band: #E6E6E6;
+  --rule: #C9C7BF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1200px; height: 660px; overflow: hidden; background: var(--stage); }
+body { font-family: "PingFang TC", "Helvetica Neue", sans-serif; color: var(--ink); position: relative; }
+
+.title { position: absolute; left: 100px; top: 44px; display: flex; align-items: baseline; gap: 18px; }
+.title h1 { font-family: "Iowan Old Style", "Songti TC", Georgia, serif; font-weight: 500; font-size: 40px; letter-spacing: -0.5px; }
+.title p { font-size: 18px; color: var(--muted); }
+
+.window {
+  position: absolute; left: 100px; top: 116px; width: 1000px; height: 440px;
+  background: var(--term-bg); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 24px 60px -18px rgba(60,50,30,.28), 0 0 0 1px rgba(0,0,0,.06);
+}
+.bar { height: 38px; background: #F4F3EE; border-bottom: 1px solid #E4E2DA; display: flex; align-items: center; padding: 0 16px; gap: 8px; position: relative; }
+.bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+.bar i:nth-child(1) { background: #FF5F57; } .bar i:nth-child(2) { background: #FEBC2E; } .bar i:nth-child(3) { background: #28C840; }
+.bar span { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--muted); }
+
+.term {
+  position: absolute; left: 0; right: 0; top: 38px; bottom: 0; padding: 18px 22px;
+  font-family: Menlo, "SF Mono", "PingFang TC", monospace; font-size: 15px; line-height: 23px; color: var(--term-ink);
+  white-space: pre;
+}
+.dim { color: var(--dim); }
+.b { font-weight: 700; }
+.rule { border-top: 1px solid var(--rule); margin: 6px 0; }
+
+.caption {
+  position: absolute; left: 0; right: 0; top: 588px; text-align: center; font-size: 21px; color: var(--ink);
+}
+.caption b { color: var(--accent); font-weight: 600; }
+
+.cursor { position: absolute; left: 0; top: 0; width: 26px; height: 26px; pointer-events: none; z-index: 50; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+.ring { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 3px solid var(--accent); opacity: 0; z-index: 49; }

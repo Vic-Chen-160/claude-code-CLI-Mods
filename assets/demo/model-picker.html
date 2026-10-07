@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<link rel="stylesheet" href="stage.css">
+<style>
+  .hint { display: flex; justify-content: space-between; }
+  .chip { background: var(--band); padding: 0 9px; }
+  .chip.hover { background: #1F1F1E; color: #fff; }
+  .menu { border-top: 1px solid var(--rule); padding-top: 6px; margin-top: 6px; }
+  .menu .sel { color: #D97757; }
+  #menu, #composer { position: relative; }
+</style></head>
+<body>
+<div class="title"><h1>model-picker</h1><p>切模型，不用再打 /model</p></div>
+<div class="window">
+  <div class="bar"><i></i><i></i><i></i><span>Terminal — claude</span></div>
+  <div class="term"><span class="dim">Claude Code</span>
+
+<span class="b">❯</span> 幫我想三個 slogan
+
+<span style="color:#D97757">●</span> 好的，以下是三個方向…
+<div id="composer"><div class="rule"></div><span class="b">❯</span> <span id="caret">▌</span>
+<div class="rule"></div></div><div id="menu"></div><div id="footer"></div></div>
+</div>
+<div class="caption"></div>
+<script src="lib.js"></script>
+<script>
+const DURATION = 9
+const MODELS = [
+  ['Default (recommended)', 'Opus 5.5 · 最強'],
+  ['Sonnet', 'Sonnet 5.5 · 日常快速'],
+  ['Haiku', 'Haiku 4.5 · 最快'],
+  ['Fable', 'Fable 5.1'],
+]
+const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max']
+window.render = t => {
+  // 3.0 秒點下 Model ↑ → 原生選單打開；往下選到 Sonnet、effort 調成 medium；6.6 秒 Enter
+  const open = t >= 3.05 && t < 6.6
+  const picked = t >= 6.6
+  const sel = t < 4.2 ? 0 : 1
+  const effort = t < 5.2 ? 2 : t < 5.7 ? 1 : 1
+  const model = picked ? 'Sonnet 5.5' : 'Opus 5.5'
+  const hover = t > 2.5 && t < 3.3
+
+  $('#composer').style.display = open ? 'none' : 'block'
+  $('#caret').style.opacity = Math.floor(t * 2) % 2 ? 0 : 1
+  $('#menu').innerHTML = open ? `<div class="menu"><span class="b">Select model</span>
+<span class="dim">切換這個對話使用的模型</span>
+
+${MODELS.map((m, i) => `${i === sel ? '<span class="sel">❯ ' : '  '}${i + 1}. ${m[0].padEnd(24)}<span class="${i === sel ? '' : 'dim'}">${m[1]}</span>${i === sel ? '</span>' : ''}`).join('\n')}
+
+  <span class="dim">Effort</span>  ${EFFORTS.map((e, i) => i === effort ? `<span class="sel">◀ ${e} ▶</span>` : `<span class="dim">${e}</span>`).join('  ')}
+<span class="dim">  ↑↓ 選模型 · ←→ 調 effort · Enter 確認</span></div>` : ''
+  $('#footer').innerHTML = open ? '' : `<span style="color:#6E56CF">◆</span> <span style="color:#1A9FB0">${model}</span> <span class="dim">│ 23% │ $0.42</span>${picked && t < 8.4 ? `   <span style="color:#2E7D32">✓ Set model to ${model}</span>` : ''}
+<div class="hint"><span><span style="color:#966C1E">⏵⏵ auto mode on</span> <span class="dim">(shift+tab to cycle)</span></span><span class="chip${hover ? ' hover' : ''}">Model ↑</span></div>`
+
+  // 「Model ↑」在舞台座標約 (1040, 372)
+  cursorAt(t, [
+    { t: 0, x: 760, y: 650 }, { t: 1.2, x: 760, y: 650 }, { t: 2.5, x: 1040, y: 372 }, { t: 3.4, x: 1040, y: 372 }, { t: 4.2, x: 1170, y: 650 },
+  ], [3.0])
+  captionAt(t, [
+    { t: 0, html: '按鈕就放在 <b>auto mode</b> 那一行的右邊' },
+    { t: 2.9, html: '一點，叫出原生的<b>模型與思考程度</b>選單' },
+    { t: 6.6, html: '選好按 Enter，<b>立刻生效</b>' },
+  ])
+}
+window.DURATION = DURATION
+window.addEventListener('load', () => render(+(new URLSearchParams(location.search).get('t') || 0)))
+</script>
+</body></html>

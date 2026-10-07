@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<link rel="stylesheet" href="stage.css">
+<style>
+  .band { background: var(--band); padding: 4px 9px; margin: 8px 0 6px; }
+  .row { display: flex; gap: 9px; height: 23px; align-items: center; }
+  .row .sym { width: 18px; } .row .msg { width: 126px; overflow: hidden; }
+  .row .ttl { flex: 1; overflow: hidden; } .row .pb { width: 145px; letter-spacing: -0.5px; } .row .go { width: 54px; }
+  .row.alert { color: #D0021B; } .row.alert .sym { font-weight: 700; }
+  .go.hover { background: #1F1F1E; color: #fff; }
+  .new { height: 23px; }
+  .scene { position: absolute; inset: 0; }
+  #b { opacity: 0; }
+  .ask { border: 1px solid #C9C7BF; border-radius: 6px; padding: 10px 14px; margin-top: 8px; }
+  .ask .sel { color: #D97757; }
+</style></head>
+<body>
+<div class="title"><h1>task-progress</h1><p>所有 Claude Code 對話的進度，一條看完</p></div>
+<div class="window">
+  <div class="bar"><i></i><i></i><i></i><span id="wtitle">Terminal — 寫 Behance 作品頁</span></div>
+  <div class="scene" id="a"><div class="term"><span class="dim">Claude Code</span>
+
+<span class="b">❯</span> 幫我把這三個案子整理成 Behance 作品頁
+
+<span style="color:#D97757">●</span> 正在讀取 _素材/ 底下的檔案…
+  <span class="dim">⎿  Read 12 files</span>
+<div class="band" id="band"></div><div class="rule"></div><span class="b">❯</span> <span id="caret">▌</span>
+<div class="rule"></div><span style="color:#6E56CF">◆</span> <span style="color:#1A9FB0">Opus 5.5</span> <span class="dim">│ 23% │ $0.42</span>
+<span style="color:#966C1E">⏵⏵ auto mode on</span> <span class="dim">(shift+tab to cycle)</span></div></div>
+  <div class="scene" id="b"><div class="term"><span class="dim">Claude Code</span>
+
+<span class="b">❯</span> 把上週收藏的案例都補上標籤
+
+<span style="color:#D97757">●</span> Bash(notion-cli update --tags …)
+<div class="ask">要執行這個指令嗎？
+
+<span class="sel">❯ 1. Yes</span>
+  2. Yes, and don't ask again
+  3. No</div></div></div>
+</div>
+<div class="caption"></div>
+<script src="lib.js"></script>
+<script>
+const DURATION = 9
+const rows = [
+  { title: '寫 Behance 作品頁', self: true },
+  { title: '整理 Notion 收藏標籤' },
+  { title: '剪 casefilm 字幕' },
+]
+const bar = (fill, t, w = 16) => {
+  if (fill < 0) { const p = Math.floor(t * 6) % w; return Array.from({ length: w }, (_, i) => Math.abs(i - p) < 2 ? '█' : '░').join('') }
+  const f = Math.round(fill * w); return '█'.repeat(f) + '░'.repeat(w - f)
+}
+window.render = t => {
+  // 三列：第一列進度慢慢長、第二列跑馬燈後變紅、第三列已完成
+  const alert = t >= 2.6
+  const data = [
+    { sym: '●', msg: t < 4 ? '正在讀檔案' : '正在寫文案', fill: .25 + .5 * seg(t, 0, 6) },
+    { sym: alert ? '？' : '●', msg: alert ? '等你確認' : '進行中', fill: -1, alert },
+    { sym: '●', msg: '完成', fill: 1 },
+  ]
+  const hoverGo = t > 4.2 && t < 5.0
+  $('#band').innerHTML = data.map((d, i) => `<div class="row${d.alert ? ' alert' : ''}"><span class="sym">${d.sym}</span><span class="msg">${d.msg}</span><span class="ttl">${rows[i].title}${rows[i].self ? '<span class="dim">（此視窗）</span>' : ''}</span><span class="pb">${bar(d.fill, t)}</span><span class="go${i === 1 && hoverGo ? ' hover' : ''}">${rows[i].self ? '' : '前往→'}</span></div>`).join('') + '<div class="new">＋ 開新對話</div>'
+  $('#caret').style.opacity = Math.floor(t * 2) % 2 ? 0 : 1
+
+  // 4.9 秒點下「前往→」，切到那個視窗
+  const sw = ease(seg(t, 4.95, 5.35))
+  $('#a').style.opacity = 1 - sw
+  $('#b').style.opacity = sw
+  $('#wtitle').textContent = sw > .5 ? 'Terminal — 整理 Notion 收藏標籤' : 'Terminal — 寫 Behance 作品頁'
+
+  // 游標座標（舞台座標）：band 第二列「前往→」大約在 (1040, 359)
+  cursorAt(t, [
+    { t: 0, x: 1160, y: 650 }, { t: 3.4, x: 1160, y: 650 }, { t: 4.4, x: 1040, y: 359 }, { t: 6.4, x: 1040, y: 359 }, { t: 7.4, x: 1160, y: 650 },
+  ], [4.9])
+  captionAt(t, [
+    { t: 0, html: '每個對話一列，<b>進度條</b>即時更新' },
+    { t: 2.6, html: '需要你回覆時，<b>整列變紅</b>' },
+    { t: 4.5, html: '點<b>「前往→」</b>，直接跳回那個視窗' },
+  ])
+}
+window.DURATION = DURATION
+window.addEventListener('load', () => render(+(new URLSearchParams(location.search).get('t') || 0)))
+</script>
+</body></html>

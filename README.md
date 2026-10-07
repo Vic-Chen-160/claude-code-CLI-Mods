@@ -16,6 +16,8 @@ Two mods (hooks plugins) for the Claude Code CLI.
 
 ## task-progress
 
+![task-progress demo](assets/task-progress.gif)
+
 輸入框上方一條淺灰底的帶子，列出這台電腦上所有 Claude Code session 的任務：
 
 - `●` 進行中／完成，`？`（紅色）等你確認權限或回答問題
@@ -28,6 +30,8 @@ Two mods (hooks plugins) for the Claude Code CLI.
 > 各 session 的狀態寫在 `~/.claude/task-progress/*.json`。
 
 ## model-picker
+
+![model-picker demo](assets/model-picker.gif)
 
 在 `⏵⏵ auto mode on (shift+tab to cycle)` 那一行右端放一顆灰底的 `Model ↑` 按鈕，
 點一下等於輸入 `/model`，叫出原生的模型與思考努力程度選單。
@@ -44,6 +48,13 @@ claude plugin test ./model-picker
 ```
 
 或不安裝、直接從資料夾載入：`claude --plugin-dir ./model-picker`。
+
+示範動畫是示意畫面（不是實錄），原始檔在 `assets/demo/`，每格由 `render(t)` 算出：
+
+```
+npm i puppeteer-core   # 另需 ffmpeg 與 Google Chrome
+node assets/demo/render.mjs task-progress
+```
 
 ## License
 
